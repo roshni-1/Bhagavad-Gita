@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhagavad Gita Quotes - Result</title>
+</head>
+<body>
+    <h1>Quotes for '{{ user_input }}'</h1>
+    {% if relevant_quotes %}
+        {% for quote in relevant_quotes %}
+            <div>
+                <p><strong>Title:</strong> {{ quote.Title }}</p>
+                <p><strong>Chapter:</strong> {{ quote.Chapter }}</p>
+                <p><strong>Verse:</strong> {{ quote.Verse }}</p>
+                <p><strong>Sanskrit Anuvad:</strong> {{ quote.Sanskrit Anuvad }}</p>
+                <p><strong>Hindi Anuvad:</strong> {{ quote.Hindi Anuvad }}</p>
+                <p><strong>English Translation:</strong> {{ quote.English Translation }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No relevant quotes found for '{{ user_input }}'.</p>
+    {% endif %}
+</body>
+</html>
