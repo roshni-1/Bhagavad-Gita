@@ -1,38 +1,29 @@
-from flask import Flask, render_template, request
-import pickle
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Load Feature Mapping
-with open('feature_mapping.pkl', 'rb') as file:
-    feature_mapping = pickle.load(file)
+# Replace 'your-secret-key' with an actual secret key for security
+SECRET_KEY = '1234'
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return "Hello, World!"
 
-@app.route('/recommend', methods=['POST'])
-def recommend():
-    user_input = request.form['user_input']
+@app.route('/webhook', methods=['POST'])
+def webhook_handler():
+    # Validate the webhook request (replace with your own validation logic)
+    if request.headers.get('X-Hub-Signature') != f'sha1={SECRET_KEY}':
+        return jsonify({"error": "Unauthorized"}), 401
 
-    matching_features = []
-    for feature, keywords in feature_mapping.items():
-        if any(keyword in user_input.lower() for keyword in keywords):
-            matching_features.append(feature)
+    try:
+        # Process the incoming payload
+        data = request.json
+        # Add your logic to handle the payload data
 
-    relevant_quotes = []
-    for feature in matching_features:
-        for verse in feature_mapping[feature]:
-            relevant_quotes.append({
-                'Title': verse['Title'],
-                'Chapter': verse['Chapter'],
-                'Verse': verse['Verse'],
-                'Sanskrit Anuvad': verse['Sanskrit Anuvad'],
-                'Hindi Anuvad': verse['Hindi Anuvad'],
-                'English Translation': verse['Enlgish Translation']
-            })
-
-    return render_template('result.html', user_input=user_input, relevant_quotes=relevant_quotes)
+        # Respond to the webhook request
+        return jsonify({"message": "Webhook received successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
